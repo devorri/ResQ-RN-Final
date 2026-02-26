@@ -1,0 +1,217 @@
+/* src/ActiveReports.css */
+.active-reports-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+}
+
+.active-reports-gradient-bg {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(to bottom,
+            #ffffff 0%,
+            #ffffff 40%,
+            #D4AF37 100%);
+    padding: 40px 20px;
+}
+
+.active-reports-content-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Header */
+.active-reports-header {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.active-reports-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.active-reports-page-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #333;
+    margin: 0;
+}
+
+/* Toolbar */
+.active-reports-toolbar {
+    background: white;
+    padding: 16px 20px;
+    border-radius: 24px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.active-reports-filters {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+}
+
+/* Active Incident Card */
+.active-card-web {
+    background: #FFF9C4;
+    border-radius: 24px;
+    padding: 24px;
+    border: 2px solid #FFC107;
+    box-shadow: 0 12px 24px rgba(255, 193, 7, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.active-card-web:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(255, 193, 7, 0.25);
+}
+
+.active-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pulse-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pulse-dot-web {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #FFC107;
+    animation: pulse-animation 1.5s infinite;
+}
+
+@keyframes pulse-animation {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+    }
+}
+
+.urgent-badge {
+    font-size: 11px;
+    font-weight: 900;
+    color: #B45309;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.mission-status-pill {
+    background: #FEF3C7;
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: 1px solid #F59E0B;
+    font-size: 11px;
+    font-weight: 800;
+    color: #B45309;
+}
+
+.active-title-web {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+}
+
+.active-desc-web {
+    font-size: 15px;
+    color: #4B5563;
+    line-height: 1.6;
+}
+
+/* Action Footer */
+.active-footer-web {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.action-btn-web {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.track-btn-web {
+    background: #F59E0B;
+    color: white;
+}
+
+.track-btn-web:hover {
+    background: #D97706;
+}
+
+.status-update-btn-web {
+    flex: 1.5;
+    color: white;
+}
+
+.status-accepted {
+    background: #FF6B6B;
+}
+
+.status-in-progress {
+    background: #4CAF50;
+}
+
+.status-arrived {
+    background: #2196F3;
+}
+
+.details-btn-web {
+    background: white;
+    color: #4B5563;
+    border: 1px solid #E5E7EB;
+}
+
+.details-btn-web:hover {
+    background: #f9fafb;
+}
+
+/* Empty State */
+.empty-missions-web {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 40px;
+    background: white;
+    border-radius: 24px;
+    color: #ccc;
+    text-align: center;
+}

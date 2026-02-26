@@ -1,0 +1,362 @@
+/* src/IncidentDetails.css */
+.incident-details-container {
+    min-height: 100vh;
+    width: 100%;
+    background: #f9fafb;
+}
+
+.details-gradient-bg {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(to bottom,
+            #ffffff 0%,
+            #f1f5f9 100%);
+    padding: 40px 20px;
+}
+
+.details-content-wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-bottom: 120px;
+    /* Space for sticky footer */
+}
+
+/* Media Carousel */
+.media-section-web {
+    background: #000;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.main-media-web {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    display: block;
+}
+
+.media-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background 0.2s;
+}
+
+.media-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.prev-btn {
+    left: 20px;
+}
+
+.next-btn {
+    right: 20px;
+}
+
+.media-counter-web {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 14px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.thumbnail-strip-web {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: #1a1a1a;
+    overflow-x: auto;
+}
+
+.thumb-wrapper-web {
+    width: 80px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.thumb-wrapper-web.active {
+    border-color: #D4AF37;
+    opacity: 1;
+}
+
+.thumb-img-web {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Content Sections */
+.details-section-web {
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.section-head-web {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.section-icon-web {
+    font-size: 22px;
+}
+
+.section-title-web {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+}
+
+/* AI Analysis Card */
+.ai-analysis-card-web {
+    background: #FAF7EA;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid #FEF3C7;
+    display: flex;
+    gap: 20px;
+}
+
+.ai-sparkle-icon {
+    font-size: 30px;
+    margin-top: 4px;
+}
+
+.ai-info-web {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ai-row-web {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ai-label-web {
+    font-weight: 800;
+    color: #111827;
+    font-size: 14px;
+}
+
+.ai-val-web {
+    color: #4B5563;
+    font-size: 15px;
+}
+
+.ai-disclaimer-web {
+    margin-top: 16px;
+    padding: 12px;
+    background: #F3F4FB;
+    border-radius: 12px;
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.5;
+    text-align: center;
+    border: 1px solid #E5E7EB;
+}
+
+.ai-disclaimer-web strong {
+    color: #DC2626;
+    font-weight: 800;
+}
+
+/* Timeline */
+.timeline-web {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.timeline-item-web {
+    display: flex;
+    gap: 20px;
+    min-height: 80px;
+}
+
+.timeline-marker-web {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px;
+}
+
+.marker-dot-web {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    z-index: 2;
+}
+
+.marker-line-web {
+    width: 2px;
+    flex: 1;
+    background: #E5E7EB;
+}
+
+.timeline-item-web:last-child .marker-line-web {
+    background: transparent;
+}
+
+.timeline-body-web {
+    flex: 1;
+    padding-bottom: 30px;
+}
+
+.timeline-header-web {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+}
+
+.timeline-status-text {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.timeline-time-text {
+    font-size: 11px;
+    color: #9CA3AF;
+    font-weight: 600;
+}
+
+.timeline-msg-text {
+    font-size: 15px;
+    color: #111827;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Action Footer */
+.details-footer-web {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.footer-content-web {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mission-banner-web {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mission-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot-web {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.mission-title-text {
+    font-size: 13px;
+    font-weight: 800;
+    color: #111827;
+    letter-spacing: 1px;
+}
+
+.premium-action-btn {
+    width: 100%;
+    padding: 18px;
+    border-radius: 16px;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.premium-action-btn:hover {
+    transform: scale(1.02);
+}
+
+.premium-action-btn:active {
+    transform: scale(0.98);
+}
+
+.btn-accept {
+    background: linear-gradient(to right, #10B981, #059669);
+}
+
+.btn-start {
+    background: linear-gradient(to right, #3B82F6, #2563EB);
+}
+
+.btn-arrive {
+    background: linear-gradient(to right, #F59E0B, #D97706);
+}
+
+.btn-complete {
+    background: linear-gradient(to right, #10B981, #059669);
+}
+
+.btn-decline {
+    background: none;
+    border: none;
+    color: #9CA3AF;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 8px;
+}

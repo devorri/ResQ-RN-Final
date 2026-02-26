@@ -1,0 +1,292 @@
+/* src/Analytics.css */
+.analytics-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+}
+
+.analytics-gradient-bg {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(to bottom,
+            #ffffff 0%,
+            #ffffff 40%,
+            #D4AF37 100%);
+    padding: 40px 20px;
+}
+
+.analytics-content-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Header */
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.header-title-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.page-subtitle {
+    font-size: 12px;
+    font-weight: 800;
+    color: #D4AF37;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 4px 0 0 0;
+}
+
+.refresh-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    color: #3B82F6;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.refresh-action-btn:hover:not(:disabled) {
+    background: #f0f7ff;
+    transform: translateY(-1px);
+}
+
+/* Strategic Overview Cards */
+.overview-grid-web {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.metric-card-web {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    transition: all 0.3s ease;
+}
+
+.metric-card-web:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+.metric-icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.metric-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.metric-value {
+    font-size: 28px;
+    font-weight: 900;
+    color: #333;
+    line-height: 1;
+}
+
+.metric-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #999;
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+
+.trend-badge-web {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+/* Distribution Sections */
+.analytics-sections-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.analytics-panel {
+    background: white;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.panel-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+}
+
+.analytics-section-header {
+    margin-top: 10px;
+    margin-bottom: -10px;
+}
+
+.section-title-web {
+    font-size: 18px;
+    font-weight: 800;
+    color: #374151;
+    letter-spacing: -0.5px;
+}
+
+.distribution-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dist-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dist-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dist-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #444;
+}
+
+.dist-count {
+    font-size: 12px;
+    font-weight: 800;
+    color: #999;
+}
+
+.progress-track {
+    height: 10px;
+    background: #f3f4f6;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+/* Performance Intelligence */
+.performance-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.perf-item {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.perf-label-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.perf-main-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: #999;
+    text-transform: uppercase;
+}
+
+.perf-sub-label {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.perf-value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.perf-large-value {
+    font-size: 32px;
+    font-weight: 900;
+    color: #333;
+}
+
+.perf-status-indicator {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.perf-comparison {
+    font-size: 11px;
+    color: #9CA3AF;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.divider-line {
+    height: 1px;
+    background: #f3f4f6;
+    margin: 20px 0;
+}
+
+/* Empty State */
+.loading-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px;
+    color: #999;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .analytics-sections-row {
+        grid-template-columns: 1fr;
+    }
+}
