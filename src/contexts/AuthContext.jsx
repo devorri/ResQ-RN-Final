@@ -1,4 +1,4 @@
-// src/contexts/AuthContext.jsx
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase, professionalAuthService } from '../supabaseClient';
 
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [authType, setAuthType] = useState(null);
 
-  // Load user from localStorage on initial mount
+  
   useEffect(() => {
     const loadUser = async () => {
       try {
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       
       const { profile } = await professionalAuthService.signIn(email, password);
       
-      // Create user object
+      
       const userData = {
         id: profile.id,
         email: profile.email,
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
         status: profile.status || 'available'
       };
 
-      // Save to state and localStorage
+      
       setUser(userData);
       setAuthType('professional');
       localStorage.setItem('professional_user', JSON.stringify(userData));

@@ -1,4 +1,4 @@
-// src/Analytics.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
@@ -27,16 +27,16 @@ const Analytics = () => {
         try {
             setIsLoading(true);
 
-            // Fetch incidents (Broad visibility)
+            
             let query = supabase.from('incidents').select('*');
 
             const { data: incidents, error } = await query;
             if (error) throw error;
 
-            // Filter incidents based on role (matching mobile logic)
+            
             const serviceType = getServiceTypeFromRole(user?.role);
             const stationIncidents = (incidents || []).filter(incident => {
-                if (user?.role === 'admin') return true; // Super Admin sees all
+                if (user?.role === 'admin') return true; 
 
                 const mainCategories = ['police', 'fire', 'ambulance'];
                 const incidentCategory = (incident.categories || []).find(cat =>
@@ -45,7 +45,7 @@ const Analytics = () => {
                 return (incidentCategory || '').toLowerCase() === serviceType;
             });
 
-            // 1. Calculate Core Stats
+            
             const totalIncidentsCount = stationIncidents.length;
             const completedIncidents = stationIncidents.filter(i => i.status === 'completed').length;
 
@@ -74,7 +74,7 @@ const Analytics = () => {
                 todayIncidents,
             });
 
-            // 2. Category Breakdown
+            
             const categories = {};
             stationIncidents.forEach(incident => {
                 const mainCategories = ['police', 'fire', 'ambulance'];
@@ -92,7 +92,7 @@ const Analytics = () => {
                 .slice(0, 5);
             setCategoryStats(catBreakdown);
 
-            // 3. Time Distribution
+            
             const timeSlots = [
                 { label: '12AM - 6AM', start: 0, end: 6, count: 0 },
                 { label: '6AM - 12PM', start: 6, end: 12, count: 0 },
@@ -131,11 +131,11 @@ const Analytics = () => {
     };
 
     const getStatusColor = (value, type) => {
-        if (type === 'rt') { // Response Time
+        if (type === 'rt') { 
             if (value <= 15) return { bg: '#D1FAE5', text: '#065F46', label: 'OPTIMAL' };
             if (value <= 30) return { bg: '#FEF3C7', text: '#92400E', label: 'ELEVATED' };
             return { bg: '#FEE2E2', text: '#991B1B', label: 'CRITICAL' };
-        } else { // Completion Rate
+        } else { 
             if (value >= 90) return { bg: '#D1FAE5', text: '#065F46', label: 'ELITE' };
             if (value >= 70) return { bg: '#FEF3C7', text: '#92400E', label: 'STABLE' };
             return { bg: '#FEE2E2', text: '#991B1B', label: 'ACTION NEEDED' };

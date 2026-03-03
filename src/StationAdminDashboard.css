@@ -1,4 +1,4 @@
-/* src/StationAdminDashboard.css */
+
 * {
     margin: 0;
     padding: 0;
@@ -28,7 +28,7 @@ body {
     padding: 40px 20px;
 }
 
-/* Dashboard Header - Matching Login Style */
+
 .dashboard-header {
     max-width: 1200px;
     margin: 0 auto 30px auto;
@@ -108,7 +108,7 @@ body {
     box-shadow: 0 8px 16px rgba(220, 38, 38, 0.2);
 }
 
-/* Content Wrapper - Matching Login Width */
+
 .dashboard-content-wrapper {
     width: 1200px;
     max-width: 1200px;
@@ -118,7 +118,7 @@ body {
     gap: 24px;
 }
 
-/* Uniform Card Style - Matching Login Card */
+
 .uniform-card {
     background: rgba(255, 255, 255, 0.98);
     border-radius: 28px;
@@ -132,7 +132,7 @@ body {
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
 }
 
-/* Section Title - Matching Login Subtitle */
+
 .section-title {
     font-size: 16px;
     font-weight: 600;
@@ -155,7 +155,7 @@ body {
     border-radius: 2px;
 }
 
-/* Command Hero Cards Grid */
+
 .command-hero-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -256,7 +256,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Status Cards Grid */
+
 .status-cards-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -311,7 +311,7 @@ body {
     color: #333333;
 }
 
-/* Quick Actions Grid */
+
 .quick-actions-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -361,7 +361,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Tickets Section */
+
 .tickets-header {
     display: flex;
     justify-content: space-between;
@@ -395,7 +395,7 @@ body {
     box-shadow: 0 8px 16px rgba(212, 175, 55, 0.3);
 }
 
-/* Ticket Card */
+
 .ticket-card {
     background-color: #ffffff;
     border-radius: 20px;
@@ -525,7 +525,7 @@ body {
     color: white;
 }
 
-/* Empty & Loading States */
+
 .empty-tickets {
     text-align: center;
     padding: 40px 20px;
@@ -556,12 +556,12 @@ body {
     }
 }
 
-/* Header Row - Full Width */
+
 .header-row {
     width: 100%;
 }
 
-/* Main Content - Two Columns */
+
 .main-content-row {
     display: flex;
     gap: 24px;
@@ -569,7 +569,7 @@ body {
     align-items: stretch;
 }
 
-/* Left Column - Fixed Width for Stats */
+
 .left-column {
     flex: 0 0 450px;
     display: flex;
@@ -577,13 +577,13 @@ body {
     gap: 24px;
 }
 
-/* Right Column - Flexible Width for Tickets */
+
 .right-column {
     flex: 1;
     min-width: 0;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .dashboard-content-wrapper {
         width: 100%;

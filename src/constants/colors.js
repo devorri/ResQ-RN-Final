@@ -1,7 +1,7 @@
-// src/constants/colors.js
+
 export const COLORS = {
-    primary: '#D4AF37', // Gold
-    secondary: '#B8860B', // Dark Gold
+    primary: '#D4AF37', 
+    secondary: '#B8860B', 
     background: {
         light: '#ffffff',
         gray: '#f3f4f6',

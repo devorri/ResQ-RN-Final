@@ -1,7 +1,7 @@
-// src/supabaseClient.js
+
 import { createClient } from '@supabase/supabase-js';
 
-// Get environment variables
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -11,12 +11,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Professional login service
+
 export const professionalAuthService = {
   async signIn(email, password) {
     console.log('🔐 Professional Login - Checking profiles table...');
 
-    // Check profiles table for station admin credentials
+    
     const { data: profile, error } = await supabase
       .from('profiles')
       .select(`

@@ -1,4 +1,4 @@
-/* src/ManageUsers.css */
+
 .manage-users-container {
     min-height: 100vh;
     width: 100%;
@@ -24,7 +24,7 @@
     gap: 24px;
 }
 
-/* Header Section */
+
 .manage-users-header {
     display: flex;
     justify-content: space-between;
@@ -80,7 +80,7 @@
     box-shadow: 0 8px 16px rgba(212, 175, 55, 0.3);
 }
 
-/* Search Bar */
+
 .search-container {
     background: #ffffff !important;
     padding: 4px 18px;
@@ -106,7 +106,7 @@
     color: #333;
 }
 
-/* Filter Badge */
+
 .filter-announcement {
     display: flex;
     align-items: center;
@@ -126,7 +126,7 @@
     margin-left: auto;
 }
 
-/* Users List */
+
 .users-list-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -250,7 +250,7 @@
     background: rgba(220, 38, 38, 0.1);
 }
 
-/* Modal Styles */
+
 .modal-overlay-web {
     position: fixed;
     top: 0;
@@ -384,7 +384,7 @@
     transform: translateY(-2px);
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
     .users-list-container {
         grid-template-columns: 1fr;

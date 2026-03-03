@@ -1,4 +1,4 @@
-// src/ManageUsers.jsx
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
@@ -17,7 +17,7 @@ const ManageUsers = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Modal State
+    
     const [modalVisible, setModalVisible] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [isAddingUser, setIsAddingUser] = useState(false);
@@ -34,7 +34,7 @@ const ManageUsers = () => {
     const isSuperAdmin = currentUser?.role === 'admin';
     const isStationAdmin = ['police_station', 'fire_station', 'ambulance_station'].includes(currentUser?.role || '');
 
-    // Set default role for station admins
+    
     useEffect(() => {
         if (isStationAdmin) {
             let defaultRole = 'police_responder';
@@ -74,7 +74,7 @@ const ManageUsers = () => {
         try {
             setIsLoading(true);
 
-            // Fetch Users
+            
             let query = supabase.from('profiles').select('*');
 
             if (isStationAdmin) {
@@ -89,7 +89,7 @@ const ManageUsers = () => {
             if (usersError) throw usersError;
             setUsers(usersData || []);
 
-            // Fetch Stations
+            
             let stationQuery = supabase.from('stations').select('*');
             if (isStationAdmin && currentUser?.station_id) {
                 stationQuery = stationQuery.eq('id', currentUser.station_id);
@@ -167,7 +167,7 @@ const ManageUsers = () => {
                 return;
             }
 
-            // Validation: Enforce Station for dependent roles
+            
             const isStationDependent = newUserData.role !== 'user' && newUserData.role !== 'admin';
             if (isStationDependent && !newUserData.station_id) {
                 alert('This role requires a Station assignment.');
@@ -176,7 +176,7 @@ const ManageUsers = () => {
 
             setIsLoading(true);
 
-            // Insert directly into profiles table (Matching custom auth patterns)
+            
             const { data, error } = await supabase
                 .from('profiles')
                 .insert([{

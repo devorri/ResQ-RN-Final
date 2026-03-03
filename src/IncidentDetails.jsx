@@ -1,4 +1,4 @@
-// src/IncidentDetails.jsx
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
@@ -47,7 +47,7 @@ const IncidentDetails = () => {
 
             if (error) throw error;
 
-            // Sort timeline by date
+            
             if (data.timeline) {
                 data.timeline.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
             }

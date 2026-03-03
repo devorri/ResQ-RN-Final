@@ -1,4 +1,4 @@
-// src/Map.jsx
+
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
@@ -8,8 +8,8 @@ import { CATEGORY_CONFIG } from './constants/category';
 import { Navigation, X, ChevronLeft, MapPin, Radio } from 'lucide-react';
 import './Map.css';
 
-// Map UI Constants
-const INITIAL_CENTER = { lat: 15.1450, lng: 120.5887 }; // Angeles City
+
+const INITIAL_CENTER = { lat: 15.1450, lng: 120.5887 }; 
 
 const MapDashboard = () => {
     const [searchParams] = useSearchParams();
@@ -39,7 +39,7 @@ const MapDashboard = () => {
         };
     }, []);
 
-    // Auto-select incident if trackingId is provided
+    
     useEffect(() => {
         if (trackingIncidentId && incidents.length > 0 && map) {
             const target = incidents.find(i => i.id.toString() === trackingIncidentId);
@@ -51,7 +51,7 @@ const MapDashboard = () => {
 
     const fetchInitialData = async () => {
         try {
-            // 1. Fetch Incidents
+            
             const { data: incidentsData, error: incidentsError } = await supabase
                 .from('incidents')
                 .select('*, responder:profiles!incidents_responder_id_fkey(id, name, role)')
@@ -60,7 +60,7 @@ const MapDashboard = () => {
             if (incidentsError) throw incidentsError;
             setIncidents(incidentsData || []);
 
-            // 2. Fetch Responder Locations
+            
             const { data: locationsData, error: locationsError } = await supabase
                 .from('responder_locations')
                 .select('*, user:profiles(id, name, role)');
@@ -74,17 +74,17 @@ const MapDashboard = () => {
                 const profile = loc.user;
                 if (!profile) return;
 
-                // Visibility Logic overhaul
+                
                 if (user?.role !== 'admin') {
                     const myRole = user.role.toLowerCase();
                     const targetRole = (profile.role || '').toLowerCase();
 
-                    // Only filter if the target is actually a responder (not a reporter/user)
+                    
                     if (targetRole !== 'user') {
-                        const myDept = myRole.split('_')[0]; // police, fire, ambulance
+                        const myDept = myRole.split('_')[0]; 
                         const targetDept = targetRole.includes('fire') ? 'fire' : targetRole.split('_')[0];
 
-                        // If departments don't match, hide it (except for global admins)
+                        
                         if (myDept !== targetDept && myRole !== 'admin') return;
                     }
                 }
@@ -108,8 +108,8 @@ const MapDashboard = () => {
                         delete next[oldData.user_id];
                     } else {
                         const existing = prev[newData.user_id];
-                        // If it's a new unit and we are not admin, we should probably check roles...
-                        // But for now keeping it simple as joins aren't in payload
+                        
+                        
                         next[newData.user_id] = {
                             ...newData,
                             user: existing?.user || newData.user

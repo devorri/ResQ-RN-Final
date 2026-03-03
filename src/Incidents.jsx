@@ -1,4 +1,4 @@
-// src/Incidents.jsx
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
@@ -14,7 +14,7 @@ const Incidents = () => {
     const [incidents, setIncidents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Filters State
+    
     const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
     const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || null);
     const [selectedStatus, setSelectedStatus] = useState(searchParams.get('status') || null);
@@ -34,7 +34,7 @@ const Incidents = () => {
         user:profiles!incidents_user_id_fkey(id, name, phone)
       `);
 
-            // Role-Based Filtering
+            
             if (user.role === 'police_station') {
                 query = query.contains('categories', ['police']);
             } else if (user.role === 'fire_station') {
@@ -57,7 +57,7 @@ const Incidents = () => {
     const filteredIncidents = useMemo(() => {
         let result = [...incidents];
 
-        // Search Filter
+        
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             result = result.filter(i =>
@@ -67,17 +67,17 @@ const Incidents = () => {
             );
         }
 
-        // Category Filter
+        
         if (selectedCategory) {
             result = result.filter(i => i.categories.includes(selectedCategory));
         }
 
-        // Status Filter
+        
         if (selectedStatus) {
             result = result.filter(i => i.status === selectedStatus);
         }
 
-        // Sorting
+        
         result.sort((a, b) => {
             const dateA = new Date(a.created_at).getTime();
             const dateB = new Date(b.created_at).getTime();

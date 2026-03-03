@@ -1,4 +1,4 @@
-// src/ManageStations.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
@@ -16,7 +16,7 @@ const ManageStations = () => {
     const isSuperAdmin = currentUser?.role === 'admin';
     const isStationAdmin = ['police_station', 'fire_station', 'ambulance_station'].includes(currentUser?.role || '');
 
-    // Modal State
+    
     const [modalVisible, setModalVisible] = useState(false);
     const [editingStation, setEditingStation] = useState(null);
     const [formData, setFormData] = useState({

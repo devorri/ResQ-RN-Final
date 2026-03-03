@@ -1,4 +1,4 @@
-// src/constants/category.js
+
 
 export const CATEGORY_CONFIG = {
     police: { label: 'Police', color: '#1e3a5f', icon: '👮' },

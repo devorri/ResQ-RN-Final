@@ -1,4 +1,4 @@
-/* src/ProfessionalLogin.css */
+
 * {
     margin: 0;
     padding: 0;
@@ -33,9 +33,9 @@ body {
 
 .login-content-wrapper {
     width: 340px;
-    /* fixed width instead of 85% */
+    
     max-width: 340px;
-    /* hard cap */
+    
     margin: 20px auto;
     padding: 35px 28px 45px 28px;
     display: flex;
@@ -221,7 +221,7 @@ body {
     font-size: 14px;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 400px) {
     .login-content-wrapper {
         width: calc(100vw - 40px);

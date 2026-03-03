@@ -1,4 +1,4 @@
-// src/StationAdminDashboard.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
@@ -83,7 +83,7 @@ const StationAdminDashboard = () => {
     }
   };
 
-  // Calculate stats
+  
   const userIncidents = incidents;
   const openTickets = userIncidents.filter(i => i.status === 'pending').length;
   const inProgress = userIncidents.filter(i =>

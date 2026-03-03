@@ -1,4 +1,4 @@
-// src/ActiveReports.jsx
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
@@ -17,7 +17,7 @@ const ActiveReports = () => {
     useEffect(() => {
         fetchActiveIncidents();
 
-        // Subscription for real-time updates
+        
         const subscription = supabase
             .channel('active_incidents_channel')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, payload => {
@@ -40,10 +40,10 @@ const ActiveReports = () => {
                 user:profiles!incidents_user_id_fkey(id, name, phone)
             `);
 
-            // Filter for active statuses
+            
             query = query.in('status', ['pending', 'accepted', 'arrived', 'in_progress']);
 
-            // Role-Based Filtering
+            
             const role = user.role || '';
             if (role !== 'admin') {
                 if (role.toLowerCase().includes('police')) {
@@ -96,7 +96,7 @@ const ActiveReports = () => {
 
             if (updateError) throw updateError;
 
-            // Log the timeline update
+            
             await supabase.from('incident_updates').insert({
                 incident_id: incident.id,
                 status: nextStatus,
@@ -105,7 +105,7 @@ const ActiveReports = () => {
                 created_at: new Date().toISOString()
             });
 
-            // If completed, clear responder status
+            
             if (nextStatus === 'completed' && incident.responder_id) {
                 await supabase.from('profiles')
                     .update({ status: 'available', current_incident_id: null })

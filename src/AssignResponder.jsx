@@ -1,4 +1,4 @@
-// src/AssignResponder.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
@@ -27,7 +27,7 @@ const AssignResponder = () => {
         try {
             setIsLoading(true);
 
-            // 1. Load incident details
+            
             const { data: incidentData, error: incidentError } = await supabase
                 .from('incidents')
                 .select(`
@@ -44,7 +44,7 @@ const AssignResponder = () => {
 
             setIncidentInfo(incidentData);
 
-            // 2. Determine Service Type
+            
             const mainCategories = ['police', 'fire', 'ambulance'];
             const serviceType = (incidentData?.categories?.find(cat =>
                 mainCategories.includes(cat.toLowerCase())
@@ -52,7 +52,7 @@ const AssignResponder = () => {
 
             console.log(`🔍 Fetching responders for service: ${serviceType}`);
 
-            // 3. Fetch All Responders for the service type
+            
             const { data: respondersData, error: respondersError } = await supabase
                 .from('profiles')
                 .select('*')
@@ -93,12 +93,12 @@ const AssignResponder = () => {
             setIsLoading(true);
             const selectedResponderData = responders.find(r => r.id === selectedResponder);
 
-            // 1. Update incident with responder assignment
+            
             const { error: incidentError } = await supabase
                 .from('incidents')
                 .update({
                     responder_id: selectedResponder,
-                    station_id: user?.station_id,  // Ensure station is set
+                    station_id: user?.station_id,  
                     status: 'accepted',
                     accepted_at: new Date().toISOString()
                 })
@@ -109,7 +109,7 @@ const AssignResponder = () => {
                 throw incidentError;
             }
 
-            // 2. Update responder's status and current incident
+            
             const { error: responderError } = await supabase
                 .from('profiles')
                 .update({
@@ -123,7 +123,7 @@ const AssignResponder = () => {
                 throw responderError;
             }
 
-            // 3. Create timeline entry
+            
             const { error: timelineError } = await supabase
                 .from('incident_updates')
                 .insert({

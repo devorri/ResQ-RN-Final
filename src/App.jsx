@@ -1,4 +1,4 @@
-// src/App.jsx
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ProfessionalLogin from './ProfessionalLogin';
 import StationAdminDashboard from './StationAdminDashboard';
@@ -12,7 +12,7 @@ import IncidentDetails from './IncidentDetails';
 import Map from './Map';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-// Protected Route wrapper component
+
 const ProtectedRoute = ({ children }) => {
   const { user, isLoading } = useAuth();
 
@@ -34,7 +34,7 @@ const ProtectedRoute = ({ children }) => {
   return user ? children : <Navigate to="/professional-login" />;
 };
 
-// Public Route wrapper
+
 const PublicRoute = ({ children }) => {
   const { user, isLoading } = useAuth();
 
