@@ -5,7 +5,7 @@ import StationAdminDashboard from './StationAdminDashboard';
 import ManageUsers from './ManageUsers';
 import ManageStations from './ManageStations';
 import AssignResponder from './AssignResponder';
-import Analytics from './Analytics';
+
 import Incidents from './Incidents';
 import ActiveReports from './ActiveReports';
 import IncidentDetails from './IncidentDetails';
@@ -129,14 +129,7 @@ function AppContent() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/analytics"
-        element={
-          <ProtectedRoute>
-            <Analytics />
-          </ProtectedRoute>
-        }
-      />
+
       <Route
         path="/incidents"
         element={

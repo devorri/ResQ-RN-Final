@@ -167,25 +167,36 @@ const ManageUsers = () => {
                 return;
             }
 
-            
             const isStationDependent = newUserData.role !== 'user' && newUserData.role !== 'admin';
-            if (isStationDependent && !newUserData.station_id) {
+
+            // Auto-assign station for station admins
+            let stationId = newUserData.station_id;
+            let serviceType = newUserData.service_type;
+            if (isStationAdmin && currentUser?.station_id) {
+                stationId = currentUser.station_id;
+                serviceType = currentUser.role.split('_')[0]; // 'police', 'fire', or 'ambulance'
+            }
+
+            if (isStationDependent && !stationId) {
                 alert('This role requires a Station assignment.');
                 return;
             }
 
             setIsLoading(true);
 
-            
+            // Generate a UUID since profiles.id has no auto-generation
+            const newId = crypto.randomUUID();
+
             const { data, error } = await supabase
                 .from('profiles')
                 .insert([{
+                    id: newId,
                     email: newUserData.email.trim().toLowerCase(),
                     name: newUserData.name.trim(),
                     role: newUserData.role,
                     password: newUserData.password,
-                    station_id: newUserData.station_id,
-                    service_type: newUserData.service_type,
+                    station_id: stationId,
+                    service_type: serviceType,
                     status: 'available'
                 }]);
 

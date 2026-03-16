@@ -140,7 +140,7 @@ const AssignResponder = () => {
             }
 
             alert(`Incident successfully assigned to ${selectedResponderData?.name}`);
-            navigate(`/map?trackingIncidentId=${incidentId}`);
+            navigate(`/incident-details/${incidentId}`);
         } catch (error) {
             console.error('Error assigning responder:', error);
             alert('Failed to assign responder. Please try again.');

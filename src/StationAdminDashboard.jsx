@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { supabase } from './supabaseClient';
@@ -18,7 +18,14 @@ const StationAdminDashboard = () => {
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pulseAnim, setPulseAnim] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifPanel, setShowNotifPanel] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const channelRef = useRef(null);
+  const notifIdRef = useRef(0);
+  const audioRef = useRef(null);
 
+  // Pulse animation
   useEffect(() => {
     const interval = setInterval(() => {
       setPulseAnim(prev => !prev);
@@ -26,7 +33,13 @@ const StationAdminDashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const fetchIncidents = async () => {
+  // Create audio element for notification sound
+  useEffect(() => {
+    audioRef.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdH2LkZF/cWtxfIeTkYJzaW55hJKRg3Nqb3uGkpCCcmlueYWSkYNzam97hpKQgnJpbnmFkpGDc2pve4aSkIJyaW55hZKRg3Nqb3uGko+CcsA=');
+    audioRef.current.volume = 0.3;
+  }, []);
+
+  const fetchIncidents = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -62,25 +75,75 @@ const StationAdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    if (user) {
-      fetchIncidents();
-    }
   }, [user]);
+
+  // Real-time subscription
+  useEffect(() => {
+    if (!user) return;
+    fetchIncidents();
+
+    const channel = supabase
+      .channel('dashboard_realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, (payload) => {
+        // Refresh data on any change
+        fetchIncidents();
+
+        // Show notification toast for new incidents
+        if (payload.eventType === 'INSERT') {
+          const newIncident = payload.new;
+          // Check if this incident is relevant to this station
+          let isRelevant = true;
+          if (user?.role === 'police_station' && !newIncident.categories?.includes('police')) isRelevant = false;
+          if (user?.role === 'fire_station' && !newIncident.categories?.includes('fire')) isRelevant = false;
+          if (user?.role === 'ambulance_station' && !newIncident.categories?.includes('ambulance')) isRelevant = false;
+
+          if (isRelevant) {
+            addNotification({
+              title: '🚨 New Emergency Report',
+              message: newIncident.title || 'A new incident has been reported',
+              incidentId: newIncident.id,
+              time: new Date().toLocaleTimeString()
+            });
+          }
+        }
+      })
+      .subscribe();
+
+    channelRef.current = channel;
+
+    return () => {
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+      }
+    };
+  }, [user, fetchIncidents]);
+
+  const addNotification = (notif) => {
+    const id = ++notifIdRef.current;
+    setNotifications(prev => [{ ...notif, id }, ...prev].slice(0, 20));
+    setUnreadCount(prev => prev + 1);
+
+    // Play sound
+    try { audioRef.current?.play().catch(() => {}); } catch(e) {}
+
+    // Auto-dismiss toast after 5 seconds
+    setTimeout(() => {
+      const toastEl = document.getElementById(`toast-${id}`);
+      if (toastEl) toastEl.classList.add('toast-exit');
+      setTimeout(() => {
+        const el = document.getElementById(`toast-${id}`);
+        if (el) el.remove();
+      }, 300);
+    }, 5000);
+  };
 
   const handleLogout = async () => {
     await logout();
     navigate('/professional-login');
   };
 
-  const handleIncidentAction = (incidentId, action) => {
-    if (action === 'assign') {
-      navigate(`/assign-responder?incidentId=${incidentId}`);
-    } else if (action === 'view') {
-      navigate(`/incident-details/${incidentId}`);
-    }
+  const handleIncidentAction = (incidentId) => {
+    navigate(`/incident-details/${incidentId}`);
   };
 
   
@@ -123,16 +186,33 @@ const StationAdminDashboard = () => {
     }
   };
 
-  const deployedUnits = new Set(
-    userIncidents
-      .filter(i => i.responder_id && ['accepted', 'in_progress'].includes(i.status))
-      .map(i => i.responder_id)
-  ).size;
+  const deployedResponders = userIncidents
+    .filter(i => i.responder_id && ['accepted', 'in_progress', 'arrived'].includes(i.status));
+
+  const deployedUnits = new Set(deployedResponders.map(i => i.responder_id)).size;
+
+  const [showDeployedPanel, setShowDeployedPanel] = useState(false);
 
   return (
     <div className="station-admin-container">
       <div className="dashboard-gradient-bg">
         <div className="dashboard-content-wrapper">
+
+          {/* Notification Toasts */}
+          <div className="toast-container">
+            {notifications.slice(0, 3).map(notif => (
+              <div key={notif.id} id={`toast-${notif.id}`} className="toast-notification">
+                <div className="toast-content">
+                  <span className="toast-title">{notif.title}</span>
+                  <span className="toast-message">{notif.message}</span>
+                </div>
+                <button className="toast-action" onClick={() => {
+                  if (notif.incidentId) navigate(`/incident-details/${notif.incidentId}`);
+                }}>View</button>
+              </div>
+            ))}
+          </div>
+
           {/* Header Row - Full Width */}
           <div className="header-row">
             <header className="dashboard-header uniform-card">
@@ -149,10 +229,40 @@ const StationAdminDashboard = () => {
                   <p className="dashboard-role">{getRoleTitle(user?.role)}</p>
                 </div>
               </div>
-              <button onClick={handleLogout} className="logout-btn">
-                <span>🚪</span> Logout
-              </button>
+              <div className="header-right-actions">
+                <button className="notif-bell-btn" onClick={() => { setShowNotifPanel(!showNotifPanel); setUnreadCount(0); }}>
+                  🔔
+                  {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+                </button>
+                <button onClick={handleLogout} className="logout-btn">
+                  <span>🚪</span> Logout
+                </button>
+              </div>
             </header>
+
+            {/* Notification Panel */}
+            {showNotifPanel && (
+              <div className="notif-panel uniform-card">
+                <div className="notif-panel-header">
+                  <h3>Notifications</h3>
+                  <button onClick={() => setNotifications([])}>Clear All</button>
+                </div>
+                {notifications.length === 0 ? (
+                  <p className="notif-empty">No notifications yet</p>
+                ) : (
+                  notifications.map(n => (
+                    <div key={n.id} className="notif-item" onClick={() => {
+                      if (n.incidentId) navigate(`/incident-details/${n.incidentId}`);
+                      setShowNotifPanel(false);
+                    }}>
+                      <span className="notif-item-title">{n.title}</span>
+                      <span className="notif-item-msg">{n.message}</span>
+                      <span className="notif-item-time">{n.time}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
           {/* Main Content - Two Columns */}
@@ -176,7 +286,7 @@ const StationAdminDashboard = () => {
                     <div className="command-hero-label">ACTIVE EMERGENCIES</div>
                   </div>
 
-                  <div className="command-hero-card">
+                  <div className="command-hero-card clickable" onClick={() => setShowDeployedPanel(!showDeployedPanel)}>
                     <div className="command-hero-header">
                       <div className="command-hero-icon-circle">
                         <span className="command-icon">🛡️</span>
@@ -189,6 +299,26 @@ const StationAdminDashboard = () => {
                     <div className="command-hero-label">FORCE DEPLOYED</div>
                   </div>
                 </div>
+
+                {/* Deployed Responders Panel */}
+                {showDeployedPanel && (
+                  <div className="deployed-panel">
+                    <h3 className="deployed-panel-title">Deployed Responders</h3>
+                    {deployedResponders.length === 0 ? (
+                      <p className="deployed-empty">No responders currently deployed</p>
+                    ) : (
+                      deployedResponders.map(i => (
+                        <div key={i.id} className="deployed-item" onClick={() => navigate(`/map?trackingIncidentId=${i.id}`)}>
+                          <div className="deployed-item-info">
+                            <span className="deployed-responder-name">🛡️ {i.responder?.name || 'Unknown Responder'}</span>
+                            <span className="deployed-incident-title">→ {i.title}</span>
+                          </div>
+                          <span className="deployed-track-btn">🗺️ Track</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Ticket Tracking Card */}
@@ -228,12 +358,6 @@ const StationAdminDashboard = () => {
               <div className="uniform-card">
                 <h2 className="section-title">Quick Actions</h2>
                 <div className="quick-actions-grid">
-                  <button className="quick-action-item" onClick={() => navigate('/analytics')}>
-                    <div className="stat-icon">
-                      <span className="stat-icon-text">📊</span>
-                    </div>
-                    <span className="quick-action-label">Analytics</span>
-                  </button>
                   <button className="quick-action-item" onClick={() => navigate('/manage-users')}>
                     <div className="stat-icon">
                       <span className="stat-icon-text">👥</span>
@@ -252,6 +376,12 @@ const StationAdminDashboard = () => {
                     </div>
                     <span className="quick-action-label">Map</span>
                   </button>
+                  <button className="quick-action-item" onClick={() => navigate('/incidents')}>
+                    <div className="stat-icon">
+                      <span className="stat-icon-text">📋</span>
+                    </div>
+                    <span className="quick-action-label">All Reports</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -262,9 +392,10 @@ const StationAdminDashboard = () => {
               <div className="uniform-card" style={{ height: '100%' }}>
                 <div className="tickets-header">
                   <h2 className="tickets-title">{getTabTitle()}</h2>
-                  <button onClick={fetchIncidents} className="refresh-btn">
-                    <span>🔄</span> Refresh
-                  </button>
+                  <div className="realtime-indicator">
+                    <div className="realtime-dot" />
+                    <span>Real-time</span>
+                  </div>
                 </div>
 
                 <div style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 250px)' }}>
@@ -297,20 +428,11 @@ const StationAdminDashboard = () => {
                               </p>
                             </div>
                             <div className="action-buttons">
-                              {incident.status === 'pending' && (
-                                <button
-                                  className="check-button assign-btn"
-                                  onClick={() => handleIncidentAction(incident.id, 'assign')}
-                                >
-                                  Assign
-                                </button>
-                              )}
                               <button
-                                className={`check-button ${activeTab === 'completed' ? 'view-btn' : 'check-btn'
-                                  }`}
-                                onClick={() => handleIncidentAction(incident.id, 'view')}
+                                className="check-button check-btn"
+                                onClick={() => handleIncidentAction(incident.id)}
                               >
-                                {activeTab === 'completed' ? 'View' : 'Check'}
+                                Check
                               </button>
                             </div>
                           </div>

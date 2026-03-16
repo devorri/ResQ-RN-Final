@@ -1,9 +1,10 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { supabase } from './supabaseClient';
 import { CATEGORY_CONFIG, STATUS_CONFIG } from './constants/category';
+import { COLORS } from './constants/colors';
 import './IncidentDetails.css';
 
 const IncidentDetails = () => {
@@ -14,9 +15,13 @@ const IncidentDetails = () => {
     const [incident, setIncident] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeMediaIndex, setActiveMediaIndex] = useState(0);
-    const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+
+    // Assign responder state
+    const [showAssignSection, setShowAssignSection] = useState(false);
     const [availableResponders, setAvailableResponders] = useState([]);
+    const [selectedResponder, setSelectedResponder] = useState(null);
     const [fetchingResponders, setFetchingResponders] = useState(false);
+    const [assignSuccess, setAssignSuccess] = useState(false);
 
     useEffect(() => {
         fetchIncidentDetails();
@@ -47,7 +52,6 @@ const IncidentDetails = () => {
 
             if (error) throw error;
 
-            
             if (data.timeline) {
                 data.timeline.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
             }
@@ -92,13 +96,120 @@ const IncidentDetails = () => {
         }
     };
 
-    if (loading && !incident) return <div className="loading-overlay">⏳ Loading mission details...</div>;
+    // Fetch available responders for inline assign
+    const fetchResponders = async () => {
+        try {
+            setFetchingResponders(true);
+            const mainCategories = ['police', 'fire', 'ambulance'];
+            const serviceType = (incident?.categories?.find(cat =>
+                mainCategories.includes(cat.toLowerCase())
+            ))?.toLowerCase() || 'police';
+
+            let roles = [];
+            switch (serviceType) {
+                case 'police': roles = ['police_responder']; break;
+                case 'fire': roles = ['firefighter']; break;
+                case 'ambulance': roles = ['ambulance_responder']; break;
+            }
+
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .in('role', roles)
+                .order('name');
+
+            if (error) throw error;
+            setAvailableResponders(data || []);
+        } catch (error) {
+            console.error('Error fetching responders:', error);
+        } finally {
+            setFetchingResponders(false);
+        }
+    };
+
+    const handleAssign = async () => {
+        if (!selectedResponder) {
+            alert('Please select a responder');
+            return;
+        }
+
+        try {
+            const responderData = availableResponders.find(r => r.id === selectedResponder);
+
+            const { error: incidentError } = await supabase
+                .from('incidents')
+                .update({
+                    responder_id: selectedResponder,
+                    station_id: user?.station_id,
+                    status: 'accepted',
+                    accepted_at: new Date().toISOString()
+                })
+                .eq('id', id);
+
+            if (incidentError) throw incidentError;
+
+            const { error: responderError } = await supabase
+                .from('profiles')
+                .update({
+                    status: 'busy',
+                    current_incident_id: parseInt(id)
+                })
+                .eq('id', selectedResponder);
+
+            if (responderError) throw responderError;
+
+            await supabase.from('incident_updates').insert({
+                incident_id: parseInt(id),
+                status: 'accepted',
+                message: `Assigned to ${responderData?.name || 'responder'}`,
+                user_id: user?.id,
+                created_at: new Date().toISOString()
+            });
+
+            setAssignSuccess(true);
+            setShowAssignSection(false);
+            setSelectedResponder(null);
+
+            // Auto-dismiss success after 4 seconds
+            setTimeout(() => setAssignSuccess(false), 4000);
+
+            fetchIncidentDetails();
+        } catch (error) {
+            console.error('Error assigning responder:', error);
+            alert('Failed to assign responder. Please try again.');
+        }
+    };
+
+    const toggleAssignSection = () => {
+        if (!showAssignSection) {
+            fetchResponders();
+        }
+        setShowAssignSection(!showAssignSection);
+    };
+
+    const getAvailabilityStatus = (responder) => {
+        const isBusy = responder.status === 'busy' || responder.current_incident_id !== null;
+        if (isBusy) return { text: 'BUSY', color: COLORS.status.error, bgColor: COLORS.status.errorBg };
+        return { text: 'AVAILABLE', color: COLORS.status.success, bgColor: COLORS.status.successBg };
+    };
+
+    const getRoleDisplay = (role) => {
+        switch (role) {
+            case 'police_responder': return 'Police Officer';
+            case 'firefighter': return 'Firefighter';
+            case 'ambulance_responder': return 'Paramedic';
+            default: return role?.replace('_', ' ').toUpperCase();
+        }
+    };
+
+    if (loading && !incident) return <div className="loading-overlay">⏳ Loading report details...</div>;
     if (!incident) return <div className="error-container">Incident not found</div>;
 
     const mediaUrls = incident.image_url ? incident.image_url.split(',') : [];
     if (incident.video_url) mediaUrls.push(incident.video_url);
 
     const isResponder = incident.responder_id === user?.id;
+    const isStationAdmin = ['admin', 'police_station', 'fire_station', 'ambulance_station'].includes(user?.role);
     const primaryCategory = incident.categories?.find(cat => ['police', 'fire', 'ambulance'].includes(cat)) || 'police';
     const catConfig = CATEGORY_CONFIG[primaryCategory];
 
@@ -109,9 +220,17 @@ const IncidentDetails = () => {
 
                     {/* Header Controls */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
-                        <button className="back-btn" onClick={() => navigate(-1)}>⬅️</button>
-                        <h1 className="active-reports-page-title">Mission Intel</h1>
+                        <button className="back-btn" onClick={() => navigate('/dashboard')}>⬅️</button>
+                        <h1 className="active-reports-page-title">Report Information</h1>
                     </div>
+
+                    {/* Success Banner */}
+                    {assignSuccess && (
+                        <div className="assign-success-banner">
+                            <span>✅</span>
+                            <span>Responder has been successfully assigned to this incident!</span>
+                        </div>
+                    )}
 
                     {/* Media Carousel */}
                     <div className="media-section-web">
@@ -214,7 +333,7 @@ const IncidentDetails = () => {
                                         <span className="ai-val-web">{incident.ai_analysis.scene_description || incident.ai_analysis.summary}</span>
                                     </div>
                                     <div className="ai-row-web">
-                                        <span className="ai-label-web">AI Confidence Intelligence</span>
+                                        <span className="ai-label-web">AI Confidence</span>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <span className="ai-val-web" style={{ fontWeight: 800, color: '#059669' }}>
                                                 {Math.round((incident.ai_analysis.confidence || incident.ai_analysis.authenticity_score) * 100)}% Reliable
@@ -237,8 +356,10 @@ const IncidentDetails = () => {
                                 <span className="section-icon-web">📍</span>
                                 <h2 className="section-title-web">Location</h2>
                             </div>
-                            <p style={{ fontWeight: '700', margin: '0' }}>{incident.address}</p>
-                            <p style={{ color: '#9CA3AF', fontSize: '12px', marginTop: '5px' }}>{incident.location?.latitude.toFixed(4)}, {incident.location?.longitude.toFixed(4)}</p>
+                            <p style={{ fontWeight: '700', margin: '0' }}>{incident.address || 'Address not available'}</p>
+                            <p style={{ color: '#9CA3AF', fontSize: '12px', marginTop: '5px' }}>
+                                {incident.latitude ? `${parseFloat(incident.latitude).toFixed(4)}, ${parseFloat(incident.longitude).toFixed(4)}` : 'Coordinates not available'}
+                            </p>
                             <button className="clear-all-btn" style={{ marginTop: '10px' }} onClick={() => navigate(`/map?trackingIncidentId=${incident.id}`)}>View on Map ➡️</button>
                         </div>
                         <div className="details-section-web">
@@ -247,25 +368,88 @@ const IncidentDetails = () => {
                                 <h2 className="section-title-web">Reporter Info</h2>
                             </div>
                             <p style={{ fontWeight: '700', margin: '0' }}>{incident.user?.name || 'Anonymous'}</p>
-                            <p style={{ color: '#4B5563', fontSize: '14px' }}>📞 {incident.user?.phone || 'N/A'}</p>
-                            <p style={{ color: '#4B5563', fontSize: '14px' }}>✉️ {incident.user?.email || 'N/A'}</p>
+                            <p style={{ color: '#4B5563', fontSize: '14px', margin: '6px 0 0 0' }}>📞 {incident.user?.phone || 'N/A'}</p>
+                            <p style={{ color: '#4B5563', fontSize: '14px', margin: '4px 0 0 0' }}>✉️ {incident.user?.email || 'N/A'}</p>
                         </div>
                     </div>
 
-                    {/* assigned Responder */}
+                    {/* Assigned Responder */}
                     {incident.responder && (
                         <div className="details-section-web" style={{ borderLeft: '5px solid #10B981' }}>
                             <div className="section-head-web">
                                 <span className="section-icon-web">🛡️</span>
                                 <h2 className="section-title-web">Assigned Responder</h2>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                <div style={{ fontSize: '30px' }}>👮</div>
-                                <div>
-                                    <p style={{ fontWeight: '800', fontSize: '18px', margin: 0 }}>{incident.responder.name}</p>
-                                    <p style={{ color: '#6B7280', fontSize: '13px', textTransform: 'uppercase', margin: 0 }}>{incident.responder.role.replace('_', ' ')}</p>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                    <div style={{ fontSize: '30px' }}>👮</div>
+                                    <div>
+                                        <p style={{ fontWeight: '800', fontSize: '18px', margin: 0 }}>{incident.responder.name}</p>
+                                        <p style={{ color: '#6B7280', fontSize: '13px', textTransform: 'uppercase', margin: 0 }}>{incident.responder.role.replace('_', ' ')}</p>
+                                    </div>
                                 </div>
+                                <button className="clear-all-btn" onClick={() => navigate(`/map?trackingIncidentId=${incident.id}`)}>
+                                    🗺️ Track Responder
+                                </button>
                             </div>
+                        </div>
+                    )}
+
+                    {/* Inline Assign Responder (for station admins on pending incidents) */}
+                    {isStationAdmin && incident.status === 'pending' && !incident.responder_id && (
+                        <div className="details-section-web" style={{ borderLeft: '5px solid #3B82F6' }}>
+                            <div className="section-head-web" style={{ cursor: 'pointer' }} onClick={toggleAssignSection}>
+                                <span className="section-icon-web">👤➕</span>
+                                <h2 className="section-title-web">Assign a Responder</h2>
+                                <span style={{ marginLeft: 'auto', fontSize: '18px' }}>{showAssignSection ? '▲' : '▼'}</span>
+                            </div>
+
+                            {showAssignSection && (
+                                <div className="inline-assign-section">
+                                    {fetchingResponders ? (
+                                        <p style={{ textAlign: 'center', color: '#666' }}>⏳ Loading available responders...</p>
+                                    ) : availableResponders.length === 0 ? (
+                                        <p style={{ textAlign: 'center', color: '#666' }}>No responders available for this service type</p>
+                                    ) : (
+                                        <>
+                                            <div className="inline-responders-grid">
+                                                {availableResponders.map(r => {
+                                                    const availability = getAvailabilityStatus(r);
+                                                    const isBusy = availability.text === 'BUSY';
+                                                    return (
+                                                        <div
+                                                            key={r.id}
+                                                            className={`inline-responder-card ${selectedResponder === r.id ? 'selected' : ''} ${isBusy ? 'busy' : ''}`}
+                                                            onClick={() => !isBusy && setSelectedResponder(r.id)}
+                                                        >
+                                                            <div className="inline-responder-info">
+                                                                <span className="inline-responder-name">
+                                                                    {r.name} {isBusy && '🔒'}
+                                                                </span>
+                                                                <span className="inline-responder-role">{getRoleDisplay(r.role)}</span>
+                                                            </div>
+                                                            <span
+                                                                className="inline-responder-status"
+                                                                style={{ backgroundColor: availability.bgColor, color: availability.color }}
+                                                            >
+                                                                {availability.text}
+                                                            </span>
+                                                            {selectedResponder === r.id && <span style={{ fontSize: '18px' }}>✅</span>}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                            <button
+                                                className="inline-assign-btn"
+                                                disabled={!selectedResponder}
+                                                onClick={handleAssign}
+                                            >
+                                                👤➕ Assign Selected Responder
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
 

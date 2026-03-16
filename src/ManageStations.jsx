@@ -249,11 +249,9 @@ const ManageStations = () => {
                                             <button className="station-action-btn-web edit" onClick={() => openModal(item)}>
                                                 ✏️ Edit
                                             </button>
-                                            {isSuperAdmin && (
-                                                <button className="station-action-btn-web delete" onClick={() => handleDelete(item)}>
-                                                    🗑️ Delete
-                                                </button>
-                                            )}
+                                            <button className="station-action-btn-web delete" onClick={() => handleDelete(item)}>
+                                                🗑️ Delete
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -277,22 +275,24 @@ const ManageStations = () => {
                                     />
                                 </div>
 
-                                <div className="form-group-web">
-                                    <label className="label-web">Type</label>
-                                    <div className="type-selector-web">
-                                        {['police', 'fire', 'ambulance'].map((type) => (
-                                            <button
-                                                key={type}
-                                                className={`type-option-btn-web ${formData.type === type ? 'active' : ''}`}
-                                                style={formData.type === type ? { backgroundColor: getStationColor(type), borderColor: getStationColor(type) } : {}}
-                                                onClick={() => setFormData({ ...formData, type })}
-                                                disabled={isStationAdmin}
-                                            >
-                                                {type.toUpperCase()}
-                                            </button>
-                                        ))}
+                                {/* Only show type selector for super admins */}
+                                {isSuperAdmin && (
+                                    <div className="form-group-web">
+                                        <label className="label-web">Type</label>
+                                        <div className="type-selector-web">
+                                            {['police', 'fire', 'ambulance'].map((type) => (
+                                                <button
+                                                    key={type}
+                                                    className={`type-option-btn-web ${formData.type === type ? 'active' : ''}`}
+                                                    style={formData.type === type ? { backgroundColor: getStationColor(type), borderColor: getStationColor(type) } : {}}
+                                                    onClick={() => setFormData({ ...formData, type })}
+                                                >
+                                                    {type.toUpperCase()}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
                                 <div className="form-group-web">
                                     <label className="label-web">Address</label>

@@ -167,8 +167,8 @@ const MapDashboard = () => {
 
     const handleSelectIncident = (incident) => {
         setSelectedIncident(incident);
-        if (map && incident.location) {
-            map.panTo({ lat: incident.location.latitude, lng: incident.location.longitude });
+        if (map && incident.latitude && incident.longitude) {
+            map.panTo({ lat: parseFloat(incident.latitude), lng: parseFloat(incident.longitude) });
             map.setZoom(16);
         }
     };
@@ -191,7 +191,7 @@ const MapDashboard = () => {
                             <ChevronLeft size={24} />
                         </button>
                         <div className="map-title-text">
-                            <h1>ResQ Intelligence Map</h1>
+                            <h1>ResQ Map</h1>
                             <p className="map-subtitle">
                                 {Object.keys(responderLocations).length} Units Active • {visibleIncidents.counts.all} Emergency Signals
                             </p>
@@ -233,10 +233,10 @@ const MapDashboard = () => {
                 >
                     {/* Incident Markers */}
                     {visibleIncidents.filtered.map(incident => (
-                        incident.location && (
+                        incident.latitude && incident.longitude && (
                             <OverlayView
                                 key={`incident-${incident.id}`}
-                                position={{ lat: incident.location.latitude, lng: incident.location.longitude }}
+                                position={{ lat: parseFloat(incident.latitude), lng: parseFloat(incident.longitude) }}
                                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                             >
                                 <div className="incident-marker-container" onClick={() => handleSelectIncident(incident)}>
