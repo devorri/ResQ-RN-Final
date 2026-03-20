@@ -248,7 +248,7 @@ const MapDashboard = () => {
                                     )}
                                     <div className="incident-radar" style={{ borderColor: CATEGORY_CONFIG[incident.categories?.[0]]?.color || '#3b82f6' }}></div>
                                     <div className="incident-marker-dot" style={{ backgroundColor: CATEGORY_CONFIG[incident.categories?.[0]]?.color || '#3b82f6' }}>
-                                        {incident.severity || '!'}
+                                        {'!'}
                                     </div>
                                 </div>
                             </OverlayView>

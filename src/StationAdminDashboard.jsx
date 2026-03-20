@@ -63,8 +63,7 @@ const StationAdminDashboard = () => {
         query = query.contains('categories', ['ambulance']);
       }
 
-      query = query.order('severity', { ascending: false })
-        .order('created_at', { ascending: false });
+      query = query.order('created_at', { ascending: false });
 
       const { data, error } = await query;
 

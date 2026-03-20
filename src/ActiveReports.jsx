@@ -55,7 +55,7 @@ const ActiveReports = () => {
                 }
             }
 
-            const { data, error } = await query.order('severity', { ascending: false });
+            const { data, error } = await query.order('created_at', { ascending: false });
             if (error) throw error;
             setIncidents(data || []);
         } catch (error) {
