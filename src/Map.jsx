@@ -52,10 +52,21 @@ const MapDashboard = () => {
     const fetchInitialData = async () => {
         try {
             
-            const { data: incidentsData, error: incidentsError } = await supabase
+            let incidentsQuery = supabase
                 .from('incidents')
                 .select('*, responder:profiles!incidents_responder_id_fkey(id, name, role)')
                 .order('created_at', { ascending: false });
+
+            // Filter by station role so each admin only sees their category
+            if (user?.role === 'police_station') {
+                incidentsQuery = incidentsQuery.contains('categories', ['police']);
+            } else if (user?.role === 'fire_station') {
+                incidentsQuery = incidentsQuery.contains('categories', ['fire']);
+            } else if (user?.role === 'ambulance_station') {
+                incidentsQuery = incidentsQuery.contains('categories', ['ambulance']);
+            }
+
+            const { data: incidentsData, error: incidentsError } = await incidentsQuery;
 
             if (incidentsError) throw incidentsError;
             setIncidents(incidentsData || []);
