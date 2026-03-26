@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import ProfessionalLogin from './ProfessionalLogin';
 import StationAdminDashboard from './StationAdminDashboard';
 import ManageUsers from './ManageUsers';
+import RegisteredUsers from './RegisteredUsers';
 import ManageStations from './ManageStations';
 import AssignResponder from './AssignResponder';
 
@@ -101,6 +102,15 @@ function AppContent() {
         element={
           <ProtectedRoute>
             <ManageUsers />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/registered-users"
+        element={
+          <ProtectedRoute>
+            <RegisteredUsers />
           </ProtectedRoute>
         }
       />

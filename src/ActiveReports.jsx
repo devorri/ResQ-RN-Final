@@ -134,9 +134,9 @@ const ActiveReports = () => {
         if (user?.role === 'admin') return allCats;
 
         const role = user?.role?.toLowerCase() || '';
-        if (role.includes('police')) return allCats.filter(c => c === 'police' || c === 'traffic');
+        if (role.includes('police')) return allCats.filter(c => c === 'police');
         if (role.includes('fire')) return allCats.filter(c => c === 'fire');
-        if (role.includes('ambulance') || role.includes('medical')) return allCats.filter(c => c === 'ambulance' || c === 'medical');
+        if (role.includes('ambulance') || role.includes('medical')) return allCats.filter(c => c === 'ambulance');
 
         return [];
     }, [user]);

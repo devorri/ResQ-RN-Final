@@ -363,6 +363,12 @@ const StationAdminDashboard = () => {
                     </div>
                     <span className="quick-action-label">Users</span>
                   </button>
+                  <button className="quick-action-item" onClick={() => navigate('/registered-users')}>
+                    <div className="stat-icon">
+                      <span className="stat-icon-text">🛡️</span>
+                    </div>
+                    <span className="quick-action-label">Registered Citizens</span>
+                  </button>
                   <button className="quick-action-item" onClick={() => navigate('/manage-stations')}>
                     <div className="stat-icon">
                       <span className="stat-icon-text">🏢</span>

@@ -90,8 +90,19 @@ const Incidents = () => {
     const handleIncidentPress = (incidentId) => {
         navigate(`/incident-details/${incidentId}`);
     };
-
-    const categories = Object.keys(CATEGORY_CONFIG);
+ 
+    const visibleCategories = useMemo(() => {
+        const allCats = Object.keys(CATEGORY_CONFIG);
+        if (user?.role === 'admin') return allCats;
+ 
+        const role = user?.role?.toLowerCase() || '';
+        if (role.includes('police')) return allCats.filter(c => c === 'police');
+        if (role.includes('fire')) return allCats.filter(c => c === 'fire');
+        if (role.includes('ambulance') || role.includes('medical')) return allCats.filter(c => c === 'ambulance');
+ 
+        return [];
+    }, [user]);
+ 
     const statuses = Object.keys(STATUS_CONFIG);
 
     return (
@@ -137,7 +148,7 @@ const Incidents = () => {
                                 >
                                     All Types
                                 </div>
-                                {categories.map(cat => (
+                                 {visibleCategories.map(cat => (
                                     <div
                                         key={cat}
                                         className={`filter-pill-web ${selectedCategory === cat ? 'active' : ''}`}
@@ -215,8 +226,29 @@ const Incidents = () => {
                                             </div>
                                         </div>
 
-                                        <h2 className="incident-title-web">{incident.title}</h2>
-                                        <p className="incident-desc-web">{incident.description}</p>
+                                        <div className="card-body-with-media">
+                                            {(incident.image_url || incident.video_url) && (
+                                                <div className="incident-thumbnail-container">
+                                                    {incident.video_url ? (
+                                                        <div className="video-thumb-placeholder">
+                                                            <div className="play-icon-mini">▶️</div>
+                                                            <video src={incident.video_url} muted />
+                                                        </div>
+                                                    ) : (
+                                                        <img 
+                                                            src={incident.image_url.split(',')[0]} 
+                                                            alt="Incident Preview" 
+                                                            className="incident-thumbnail" 
+                                                        />
+                                                    )}
+                                                </div>
+                                            )}
+                                            
+                                            <div className="incident-text-content">
+                                                <h2 className="incident-title-web">{incident.title}</h2>
+                                                <p className="incident-desc-web">{incident.description}</p>
+                                            </div>
+                                        </div>
 
                                         <div className="card-footer-web">
                                             <div className="time-box-web">

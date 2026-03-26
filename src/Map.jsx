@@ -12,6 +12,7 @@ import './Map.css';
 const INITIAL_CENTER = { lat: 15.1450, lng: 120.5887 }; 
 
 const MapDashboard = () => {
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const trackingIncidentId = searchParams.get('trackingIncidentId');
     const { user } = useAuth();
@@ -199,8 +200,19 @@ const MapDashboard = () => {
                 <div className="map-header-top">
                     <div className="map-title-group">
                         <button className="map-back-btn" onClick={() => navigate('/dashboard')}>
-                            <ChevronLeft size={24} />
+                            ⬅️
                         </button>
+                        <div className="logo-container-map">
+                            <img
+                                src="/logo.png"
+                                alt="ResQ Logo"
+                                className="map-logo"
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = 'https://via.placeholder.com/80x80?text=ResQ';
+                                }}
+                            />
+                        </div>
                         <div className="map-title-text">
                             <h1>ResQ Map</h1>
                             <p className="map-subtitle">
@@ -333,6 +345,24 @@ const MapDashboard = () => {
                                 <X size={18} />
                             </button>
                         </div>
+
+                        {/* Media Preview for Map Card */}
+                        {(selectedIncident.image_url || selectedIncident.video_url) && (
+                            <div className="map-card-media-preview">
+                                {selectedIncident.video_url ? (
+                                    <div className="map-video-thumb">
+                                        <div className="play-icon-mini">▶️</div>
+                                        <video src={selectedIncident.video_url} muted />
+                                    </div>
+                                ) : (
+                                    <img 
+                                        src={selectedIncident.image_url.split(',')[0]} 
+                                        className="map-card-img" 
+                                        alt="Incident Preview" 
+                                    />
+                                )}
+                            </div>
+                        )}
 
                         <p className="card-desc">
                             {selectedIncident.description || 'No additional details provided for this emergency.'}

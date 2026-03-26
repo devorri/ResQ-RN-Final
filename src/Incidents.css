@@ -181,6 +181,64 @@
     text-transform: uppercase;
 }
 
+.card-body-with-media {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.incident-thumbnail-container {
+    flex-shrink: 0;
+    width: 140px;
+    height: 100px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f3f4f6;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.incident-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.incident-card-web:hover .incident-thumbnail {
+    transform: scale(1.05);
+}
+
+.video-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-thumb-placeholder video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+}
+
+.play-icon-mini {
+    position: absolute;
+    z-index: 2;
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.incident-text-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .incident-title-web {
     font-size: 22px;
     font-weight: 800;
